@@ -19,6 +19,14 @@ class NotificationService {
     
     if (!this.apiKey) {
       logger.warn('NOSTRIA_API_KEY not set - API calls will fail');
+      logger.warn('Available env vars:', {
+        NOSTRIA_API_URL: process.env.NOSTRIA_API_URL ? 'set' : 'not set',
+        NOSTRIA_API_KEY: process.env.NOSTRIA_API_KEY ? 'set' : 'not set',
+        API_KEY: process.env.API_KEY ? 'set' : 'not set',
+        NODE_ENV: process.env.NODE_ENV,
+      });
+    } else {
+      logger.info(`Notification service initialized with API URL: ${this.apiBaseUrl}`);
     }
   }
 

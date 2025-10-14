@@ -43,33 +43,15 @@ interface NotificationSettings {
 
 /**
  * Web Push Notification Service
+ * 
+ * Note: This notification service does NOT send web push notifications directly.
+ * It calls the main Nostria API which handles VAPID keys and actual push delivery.
+ * The methods here are kept for backward compatibility with existing routes.
  */
 class WebPushService {
   constructor() {
-    this.initializeVapidKeys();
-  }
-
-  /**
-   * Initialize VAPID keys for Web Push
-   */
-  private initializeVapidKeys(): void {
-    // Set VAPID details
-    const vapidPublicKey = process.env.PUBLIC_VAPID_KEY;
-    const vapidPrivateKey = process.env.PRIVATE_VAPID_KEY;
-    const vapidSubject = process.env.VAPID_SUBJECT;
-
-    if (!vapidPublicKey || !vapidPrivateKey || !vapidSubject) {
-      logger.error('VAPID keys or subject not set in environment variables');
-      throw new Error('VAPID keys must be set in environment variables');
-    }
-
-    webpush.setVapidDetails(
-      vapidSubject,
-      vapidPublicKey,
-      vapidPrivateKey
-    );
-
-    logger.info('VAPID keys initialized for Web Push notifications');
+    // No VAPID initialization needed - main service handles that
+    logger.info('WebPush service initialized (delegates to main API)');
   }
 
   /**
