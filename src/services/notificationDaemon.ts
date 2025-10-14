@@ -311,7 +311,7 @@ class NotificationDaemon {
         logger.debug(`Target pubkey ${targetPubkey.substring(0, 8)}... not found in follow list, skipping`);
         return;
       }
-
+      
       logger.info(`✓ User ${followerPubkey.substring(0, 8)}... followed ${targetPubkey.substring(0, 8)}... at ${new Date(event.created_at * 1000).toISOString()}`);
 
       // Send notification via the Nostria API
