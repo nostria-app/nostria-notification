@@ -12,7 +12,7 @@ const logFormat = winston.format.combine(
 
 // Configure the logger
 const logger = winston.createLogger({
-  level: process.env.NODE_ENV === 'test' ? 'warning' : process.env.LOG_LEVEL || 'info',
+  level: process.env.NODE_ENV === 'test' ? 'warning' : process.env.LOG_LEVEL || 'debug',
   format: logFormat,
   transports: [
     // Write to console
