@@ -131,15 +131,40 @@ Updated the following model files to remove database dependencies:
 
 ## API Integration Points
 
-The notification service communicates with the external Nostria API at these endpoints (to be implemented on the main service):
+The notification service communicates with the main Nostria API using these endpoints:
 
-- `GET /api/users/pubkeys` - Get all user public keys
-- `GET /api/notification/settings/{pubkey}` - Get user notification settings
-- `GET /api/notification/subscriptions/{pubkey}` - Get user's push subscriptions
-- `GET /api/account/{pubkey}/subscription` - Check if user has premium
-- `GET /api/notification/count/{pubkey}?hours=24` - Get notification count for rate limiting
-- `POST /api/notification/send` - Send notification to user
-- `POST /api/notification/log` - Log notification for tracking
+### Used by Notification Daemon:
+- `POST /api/notification/send` - Send notifications to users (requires `X-API-Key` header)
+  ```json
+  {
+    "pubkeys": ["hex-pubkey"],
+    "title": "Notification Title",
+    "body": "Notification body text",
+    "icon": "https://...",
+    "url": "https://..."
+  }
+  ```
+
+- `GET /api/notification/status/{pubkey}` - Get notification status for rate limiting (requires `X-API-Key` header)
+  - Returns: `hasSubscription`, `deviceCount`, `isPremium`, `settings`, `notifications` (count24h, dailyLimit, remaining)
+
+### Not Yet Implemented (Future):
+- An endpoint to get all user pubkeys for the daemon to monitor
+- Currently `getAllUserPubkeys()` returns empty array
+
+### Main Service Handles:
+- VAPID key management
+- Web push subscriptions
+- Device registration
+- Actual push notification delivery
+- Rate limiting enforcement
+- User preferences and filtering
+
+### This Service Handles:
+- Monitoring Nostr relays for events
+- Discovering user relay lists (kind 10002)
+- Detecting notification-worthy events (follows, mentions, etc.)
+- Calling the main API to send notifications
 
 ## Future Enhancements
 
