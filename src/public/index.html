@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nostria Notification</title>
+    <style>
+        :root {
+            --primary-color: #6366f1;
+            --secondary-color: #4f46e5;
+            --accent-color: #818cf8;
+            --text-color: #1f2937;
+            --background-color: #f9fafb;
+            --card-background: #ffffff;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+            line-height: 1.6;
+            color: var(--text-color);
+            background-color: var(--background-color);
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        header {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 2rem 0;
+            text-align: center;
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 2.5rem;
+        }
+
+        header p {
+            margin: 0.5rem 0 0;
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+
+        .card {
+            background-color: var(--card-background);
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .card h2 {
+            color: var(--primary-color);
+            margin-top: 0;
+            border-bottom: 1px solid #e5e7eb;
+            padding-bottom: 0.75rem;
+        }
+
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .feature {
+            background-color: var(--card-background);
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            padding: 1.5rem;
+            transition: transform 0.2s ease-in-out;
+        }
+
+        .feature:hover {
+            transform: translateY(-5px);
+        }
+
+        .feature h3 {
+            color: var(--primary-color);
+            margin-top: 0;
+        }
+
+        .feature-icon {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            color: var(--accent-color);
+        }
+
+        .api-endpoints {
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        .api-endpoints th,
+        .api-endpoints td {
+            text-align: left;
+            padding: 0.75rem;
+        }
+
+        .api-endpoints tr {
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .api-endpoints th {
+            background-color: #f3f4f6;
+        }
+
+        .method {
+            display: inline-block;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            font-family: monospace;
+            font-weight: bold;
+        }
+
+        .method.get {
+            background-color: #d1fae5;
+            color: #065f46;
+        }
+
+        .method.post {
+            background-color: #dbeafe;
+            color: #1e40af;
+        }
+
+        .method.delete {
+            background-color: #fee2e2;
+            color: #b91c1c;
+        }
+
+        .endpoint {
+            font-family: monospace;
+        }
+
+        /* Form styles */
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: var(--text-color);
+        }
+
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            font-size: 1rem;
+            transition: border-color 0.2s ease-in-out;
+            box-sizing: border-box;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        .btn {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 6px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.2s ease-in-out;
+        }
+
+        .btn:hover {
+            background-color: var(--secondary-color);
+        }
+
+        .btn:disabled {
+            background-color: #9ca3af;
+            cursor: not-allowed;
+        }
+
+        .form-note {
+            font-size: 0.875rem;
+            color: #6b7280;
+            margin-top: 0.25rem;
+        }
+
+        .alert {
+            padding: 1rem;
+            margin-bottom: 1rem;
+            border-radius: 6px;
+            font-weight: 500;
+        }
+
+        .alert.success {
+            background-color: #d1fae5;
+            color: #065f46;
+            border: 1px solid #a7f3d0;
+        }
+
+        .alert.error {
+            background-color: #fee2e2;
+            color: #b91c1c;
+            border: 1px solid #fca5a5;
+        }
+
+        footer {
+            text-align: center;
+            padding: 2rem 0;
+            color: #6b7280;
+            border-top: 1px solid #e5e7eb;
+            margin-top: 2rem;
+        }
+
+        @media (max-width: 768px) {
+            .feature-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .container {
+                padding: 1rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <div class="container">
+            <h1>Nostria Service</h1>
+            <p>Reliable Web Push notifications for Nostr users</p>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="card">
+            <h2>About the Service</h2>
+            <p>
+                Nostria Service provides reliable web push notifications for Nostr users.
+                The service utilizes the Web Push protocol and VAPID (Voluntary Application Server Identification)
+                to deliver secure, verifiable notifications to users across devices.
+            </p>
+        </div>
+
+        <div class="card">
+            <h2>Features</h2>
+            <div class="feature-grid">
+                <div class="feature">
+                    <div class="feature-icon">📲</div>
+                    <h3>Web Push Notifications</h3>
+                    <p>Receive real-time notifications across devices with the Web Push protocol.</p>
+                </div>
+                <div class="feature">
+                    <div class="feature-icon">🔒</div>
+                    <h3>VAPID Protocol</h3>
+                    <p>Verifiable and secure notifications with cryptographic verification.</p>
+                </div>
+                <div class="feature">
+                    <div class="feature-icon">⚡</div>
+                    <h3>Premium Features</h3>
+                    <p>Enhanced notification limits and custom filtering options for premium users.</p>
+                </div>
+                <div class="feature">
+                    <div class="feature-icon">⚙️</div>
+                    <h3>Notification Settings</h3>
+                    <p>Control how and when you receive notifications with customizable settings.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>API Endpoints</h2>
+            <p>The following endpoints are available for developers:</p>
+            <table class="api-endpoints">
+                <thead>
+                    <tr>
+                        <th>Method</th>
+                        <th>Endpoint</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><span class="method get">GET</span></td>
+                        <td><span class="endpoint"><a href="/api/status">/api/status</a></span></td>
+                        <td>Get service information and status</td>
+                    </tr>
+                    <tr>
+                        <td><span class="method get">GET</span></td>
+                        <td><span class="endpoint"><a href="/api/status/health">/api/status/health</a></span></td>
+                        <td>Health check endpoint</td>
+                    </tr>                    <tr>
+                        <td><span class="method get">GET</span></td>
+                        <td><span class="endpoint"><a href="/api/key">/api/key</a></span></td>
+                        <td>Get service public key (VAPID)</td>
+                    </tr>
+                    <tr>
+                        <td><span class="method post">POST</span></td>
+                        <td><span class="endpoint">/api/notification/send</span></td>
+                        <td>Send notifications to users (API key required)</td>
+                    </tr><tr>
+                        <td><span class="method post">POST</span></td>
+                        <td><span class="endpoint">/api/subscription/webpush/:pubkey</span></td>
+                        <td>Register a web push subscription for a user's device</td>
+                    </tr>
+                    <tr>
+                        <td><span class="method get">GET</span></td>
+                        <td><span class="endpoint">/api/subscription/devices/:pubkey</span></td>
+                        <td>Get all registered devices for a user</td>
+                    </tr>
+                    <tr>
+                        <td><span class="method get">GET</span></td>
+                        <td><span class="endpoint">/api/subscription/settings/:pubkey</span></td>
+                        <td>Get a user's notification settings</td>
+                    </tr>
+                    <tr>
+                        <td><span class="method post">POST</span></td>
+                        <td><span class="endpoint">/api/subscription/settings/:pubkey</span></td>
+                        <td>Update a user's notification settings</td>
+                    </tr>
+                    <tr>
+                        <td><span class="method delete">DELETE</span></td>
+                        <td><span class="endpoint">/api/subscription/webpush/:pubkey/:deviceKey</span></td>
+                        <td>Delete a specific device subscription for a user</td>
+                    </tr>
+                </tbody>
+            </table>
+            <p class="note">
+                <strong>Note:</strong> API endpoints require NIP-98 HTTP Authentication.
+            </p>
+        </div>
+
+        <div class="card">
+            <h2>Authentication</h2>
+            <p>
+                This API uses <strong>NIP-98 HTTP Authentication</strong> for secure access to endpoints:
+            </p>
+            <ul>
+                <li>Some API requests must include authentication headers as specified in NIP-98</li>
+                <li>You need to sign your requests with your Nostr private key</li>
+                <li>Include the following headers:
+                    <ul>
+                        <li><code>Authorization: Nostr [base64-encoded-event]</code></li>
+                        <li>The event must include the HTTP method, path, and optional request body</li>
+                    </ul>
+                </li>
+                <li>The server verifies the signature against your public key to authenticate the request</li>
+            </ul>
+            <p>
+                For more details on implementation, see the 
+                <a href="https://github.com/nostr-protocol/nips/blob/master/98.md" target="_blank">NIP-98 Specification</a>.
+            </p>
+        </div>
+
+        <div class="card">
+            <h2>Getting Started</h2>
+            <p>
+                To use the Nostria Notification Service, you need to:
+            </p>
+            <ol>
+                <li>Register a Web Push subscription with your Nostr public key</li>
+                <li>Configure your notification preferences</li>
+                <li>Ensure your app or service integrates with the notification API</li>
+            </ol>            <p>
+                For developers who want to send notifications, you need to authenticate using the API key.
+                Please contact the service administrator for API access.
+            </p>
+        </div>
+
+        <div class="card">
+            <h2>Send Notification</h2>
+            <p>Use this form to manually send notifications to users. Requires API key authentication.</p>
+            
+            <div id="notification-alert" style="display: none;"></div>
+            
+            <form id="notification-form">
+                <div class="form-group">
+                    <label for="pubkeys">Public Keys (comma-separated)</label>
+                    <input type="text" id="pubkeys" name="pubkeys" placeholder="Leave empty to send to all users">
+                    <div class="form-note">Enter Nostr public keys separated by commas, or leave empty to send to all registered users</div>
+                </div>
+
+                <div class="form-group">
+                    <label for="title">Notification Title *</label>
+                    <input type="text" id="title" name="title" required placeholder="Enter notification title">
+                </div>
+
+                <div class="form-group">
+                    <label for="body">Notification Body *</label>
+                    <textarea id="body" name="body" required placeholder="Enter notification message"></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="icon">Icon URL</label>
+                    <input type="url" id="icon" name="icon" value="https://nostria.app/icons/icon-128x128.png" placeholder="https://nostria.app/icons/icon-128x128.png">
+                </div>
+
+                <div class="form-group">
+                    <label for="url">Action URL</label>
+                    <input type="url" id="url" name="url" placeholder="https://example.com (optional)">
+                    <div class="form-note">URL to open when the notification is clicked</div>
+                </div>
+
+                <div class="form-group">
+                    <label for="apiKey">API Key *</label>
+                    <input type="password" id="apiKey" name="apiKey" required placeholder="Enter your API key">
+                    <div class="form-note">This key will be sent as the x-api-key header</div>
+                </div>
+
+                <button type="submit" class="btn" id="submit-btn">Send Notification</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('notification-form').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const submitBtn = document.getElementById('submit-btn');
+            const alertDiv = document.getElementById('notification-alert');
+            
+            // Disable button and show loading state
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Sending...';
+            alertDiv.style.display = 'none';
+            
+            try {
+                // Get form data
+                const formData = new FormData(this);
+                const data = {
+                    title: formData.get('title'),
+                    body: formData.get('body'),
+                    icon: formData.get('icon'),
+                    url: formData.get('url') || undefined
+                };
+                
+                // Add pubkeys if specified
+                const pubkeysInput = formData.get('pubkeys');
+                if (pubkeysInput && pubkeysInput.trim()) {
+                    data.pubkeys = pubkeysInput.split(',').map(pk => pk.trim()).filter(pk => pk);
+                }
+                
+                // Make API request
+                const response = await fetch('/api/notification/send', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'x-api-key': formData.get('apiKey')
+                    },
+                    body: JSON.stringify(data)
+                });
+                
+                const result = await response.json();
+                  if (response.ok) {
+                    // Show success message
+                    alertDiv.className = 'alert success';
+                    const summary = result.summary;
+                    if (summary) {
+                        alertDiv.textContent = `Notification sent successfully! Targeted: ${summary.totalTargeted} users, Successful: ${summary.successful}, Failed: ${summary.failed}, Filtered: ${summary.filtered}, Rate Limited: ${summary.limited}`;
+                    } else {
+                        alertDiv.textContent = `Notification sent successfully! ${result.message || ''}`;
+                    }
+                    alertDiv.style.display = 'block';
+                    
+                    // Reset form (except API key)
+                    const apiKey = formData.get('apiKey');
+                    this.reset();
+                    document.getElementById('apiKey').value = apiKey;
+                    document.getElementById('icon').value = 'https://nostria.app/icons/icon-128x128.png';
+                } else {
+                    // Show error message
+                    alertDiv.className = 'alert error';
+                    alertDiv.textContent = `Error: ${result.error || result.message || 'Failed to send notification'}`;
+                    alertDiv.style.display = 'block';
+                }
+            } catch (error) {
+                console.error('Error sending notification:', error);
+                alertDiv.className = 'alert error';
+                alertDiv.textContent = 'Network error: Failed to send notification. Please try again.';
+                alertDiv.style.display = 'block';
+            } finally {
+                // Re-enable button
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Send Notification';
+            }
+        });
+    </script>
+
+    <footer>
+        <div class="container">
+            <p><a href="https://www.nostria.app">www.nostria.app</a></p>
+        </div>
+    </footer>
+</body>
+
+</html>
