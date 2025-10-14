@@ -29,10 +29,10 @@ The service consists of:
 ## Configuration
 
 Environment variables:
-- `PORT`: Server port (default: 3000)
+- `PORT`: Server port (default: 3002)
 - `NODE_ENV`: Environment mode (development/production)
 - `ENABLE_DAEMON`: Enable/disable the notification daemon (default: true)
-- `NOSTRIA_API_URL`: URL of the main Nostria API (default: http://localhost:3001)
+- `NOSTRIA_API_URL`: URL of the main Nostria API (default: http://localhost:3000)
 - `NOSTRIA_API_KEY`: API key for authenticating with the main Nostria API
 
 **Note**: This service does NOT need VAPID keys. The main Nostria service handles all web push operations. This notification service only monitors Nostr relays and calls the main service's `/api/notification/send` endpoint.

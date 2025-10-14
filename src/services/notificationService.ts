@@ -14,7 +14,7 @@ class NotificationService {
   private apiKey: string;
 
   constructor() {
-    this.apiBaseUrl = process.env.NOSTRIA_API_URL || 'http://localhost:3001';
+    this.apiBaseUrl = process.env.NOSTRIA_API_URL || 'http://localhost:3000';
     this.apiKey = process.env.NOSTRIA_API_KEY || process.env.API_KEY || '';
     
     if (!this.apiKey) {
@@ -32,26 +32,62 @@ class NotificationService {
 
   /**
    * Get all user public keys that have notification subscriptions
-   * This will need to be implemented on the main Nostria API
-   * For now, we can use the account list endpoint (admin only)
+   * Uses the /api/users endpoint from the main Nostria API (protected by API key only)
    */
   async getAllUserPubkeys(): Promise<string[]> {
     try {
-      logger.info('Fetching all user pubkeys from Nostria API');
+      const url = `${this.apiBaseUrl}/api/users?limit=1000`;
+      logger.info(`Fetching all user pubkeys from Nostria API at: ${url}`);
+      logger.debug(`Using API key: ${this.apiKey ? this.apiKey.substring(0, 8) + '...' : 'NOT SET'}`);
       
-      // TODO: The main API needs a dedicated endpoint for this
-      // For now, return empty array to avoid errors
-      logger.warn('getAllUserPubkeys not yet implemented on main API');
-      return [];
+      const response = await fetch(url, {
+        headers: { 
+          'X-API-Key': this.apiKey,
+          'Content-Type': 'application/json'
+        }
+      });
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        logger.error(`Failed to fetch user list: ${response.status} ${response.statusText}`);
+        logger.error('Response:', errorText);
+        return [];
+      }
+
+      // Parse the response
+      const data = await response.json() as any;
+      logger.debug('Response structure:', JSON.stringify(data).substring(0, 200));
       
-      // Future implementation:
-      // const response = await fetch(`${this.apiBaseUrl}/api/account/list`, {
-      //   headers: { 'X-API-Key': this.apiKey }
-      // });
-      // const accounts = await response.json();
-      // return accounts.map(a => a.pubkey);
+      // Handle different response formats
+      let users: Array<{ pubkey: string }>;
+      
+      if (Array.isArray(data)) {
+        // Direct array response
+        users = data;
+      } else if (data.users && Array.isArray(data.users)) {
+        // Wrapped in { users: [...] }
+        users = data.users;
+      } else if (data.data && Array.isArray(data.data)) {
+        // Wrapped in { data: [...] }
+        users = data.data;
+      } else {
+        logger.error('Unexpected response format:', data);
+        logger.error('Response is not an array and does not contain users or data array');
+        return [];
+      }
+      
+      const pubkeys = users.map(u => u.pubkey).filter(Boolean);
+      
+      logger.info(`Found ${pubkeys.length} user pubkeys`);
+      return pubkeys;
     } catch (error) {
-      logger.error('Error fetching user pubkeys:', error);
+      logger.error(`Error fetching user pubkeys from ${this.apiBaseUrl}:`, error);
+      if (error instanceof Error) {
+        logger.error(`Error message: ${error.message}`);
+        logger.error(`Error stack:`, error.stack);
+      }
+      logger.error('Is the main Nostria API running and accessible?');
+      logger.error(`Expected API URL: ${this.apiBaseUrl}`);
       return [];
     }
   }
