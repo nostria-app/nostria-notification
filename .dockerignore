@@ -8,6 +8,7 @@ node_modules
 npm-debug.log
 yarn-debug.log
 yarn-error.log
+package-lock.json
 
 # TypeScript build output
 dist/
@@ -15,23 +16,52 @@ dist/
 # Environment variables
 .env
 .env.*
+.env.local
+.env.development
+.env.production
 
 # Documentation
 README.md
 CHANGELOG.md
 LICENSE
-docs
+*.md
+docs/
 
-# Development files
+# Development and test files
 *.test.js
 *.test.ts
+**/*.test.ts
+**/*.test.js
+test-setup.ts
+test-setup.e2e.ts
+jest.config.js
+jest.e2e.config.js
 tests/
+__tests__/
+
+# IDE and editor files
 .vscode/
 .idea/
-*.log
+*.swp
+*.swo
+*~
+.DS_Store
 
-# Data directory (logs, etc.)
+# Logs and data
+*.log
 data/
 
 # Build artifacts
 coverage/
+.nyc_output/
+
+# Scripts (not needed in production)
+scripts/
+
+# Docker files (not needed inside container)
+Dockerfile
+.dockerignore
+docker-compose*.yml
+
+# CI/CD
+.github/
