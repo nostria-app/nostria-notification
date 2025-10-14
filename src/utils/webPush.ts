@@ -2,7 +2,7 @@ import webpush from 'web-push';
 import fs from 'fs';
 import path from 'path';
 import logger from './logger';
-import notificationService from '../database/notificationService';
+import notificationService from '../services/notificationService';
 
 interface PushSubscription {
   endpoint: string;

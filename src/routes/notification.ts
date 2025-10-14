@@ -1,5 +1,5 @@
 import express, { Request, Response } from 'express';
-import notificationService from '../database/notificationService';
+import notificationService from '../services/notificationService';
 import webPush from '../utils/webPush';
 import logger from '../utils/logger';
 
@@ -314,6 +314,12 @@ router.post('/send', async (req: Request, res: Response): Promise<void> => {
       }
     }
 
+    // Ensure we have pubkeys at this point
+    if (!targetPubkeys || targetPubkeys.length === 0) {
+      res.status(400).json({ error: 'No target pubkeys found' });
+      return;
+    }
+
     // Process notifications for each pubkey
     const results: NotificationResult = {
       success: [],
@@ -382,21 +388,21 @@ router.post('/send', async (req: Request, res: Response): Promise<void> => {
         // Send notification to all user's devices
         for (const subscriptionEntity of subscriptionEntities) {
           try {
-            // Parse subscription from string
-            const subscription = JSON.parse(subscriptionEntity.subscription);
+            // Subscription is already an object, no need to parse
+            const subscription = subscriptionEntity.subscription;
 
             // Send Web Push notification
             const pushResult = await webPush.sendNotification(subscription, webPushPayload);
 
             if (pushResult && pushResult.error === 'expired_subscription') {
-              logger.warn(`Expired subscription for user ${pubkey}, device key: ${subscriptionEntity.rowKey.substring(0, 16)}...`);
+              logger.warn(`Expired subscription for user ${pubkey}, device key: ${subscriptionEntity.deviceKey.substring(0, 16)}...`);
               deviceFailCount++;
               // Could delete expired subscription here if desired
             } else {
               deviceSuccessCount++;
             }
           } catch (deviceError) {
-            logger.error(`Error sending notification to device ${subscriptionEntity.rowKey.substring(0, 16)}... for user ${pubkey}: ${(deviceError as Error).message}`);
+            logger.error(`Error sending notification to device ${subscriptionEntity.deviceKey.substring(0, 16)}... for user ${pubkey}: ${(deviceError as Error).message}`);
             deviceFailCount++;
           }
         }

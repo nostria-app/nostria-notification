@@ -1,7 +1,5 @@
-import { CosmosDbEntity } from "../database/CosmosDbBaseRepository";
-
-export interface NotificationSettings extends CosmosDbEntity {
-  id: string; // Will be "notificatoin-settings-" + pubkey
+export interface NotificationSettings {
+  id: string; // Will be "notification-settings-" + pubkey
   type: 'notification-settings';
   pubkey: string; // Partition key
   enabled: boolean;
